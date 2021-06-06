@@ -1,0 +1,4 @@
+[kafka]
+13.127.103.25 kafka_brioker_id=0 kafka_hostname=kafka-0 zookeeper_id=0 ansible_ssh_user=ubuntu kafka_private=172.31.35.138
+#<pub-ip> kafka_brioker_id=0 kafka_hostname=kafka-0 zookeeper_id=0 ansible_ssh_user=ec2-user kafka_private=<private-ip>
+#<pub-ip> kafka_broker_id=1 kafka_hostname=kafka-1 zookeeper_id=1 ansible_ssh_user=ec2-user kafka_private=<private-ip>

@@ -1,0 +1,35 @@
+---
+- name: Install python apt... Hell yeah ubuntu
+  shell: apt-get update; apt-get install python-apt -y
+
+- name: Ensure required packages are installed
+  apt: name={{ item }} state=present
+  with_items:
+    - build-essential
+    - ruby
+    - vim
+
+- name: Place the redis.conf file on all hosts
+  copy: src=redis.conf.j2 dest=/etc/redis.conf
+
+- name: install redis
+  shell: apt-get update
+
+- name: install redis
+  shell: apt-get -y install redis-server
+
+
+
+ 
+- name: Ensure /var/log/redis/ exists
+  file: path=/var/log/redis owner=root group=root mode=0w777 state=directory
+
+- name: Ensure /var/lib/redis/ exsists
+  file: path=/var/lib/redis owner=root group=root mode=0777 state=directory
+
+
+- name: Start redis
+  shell: service redis-server restart
+
+- name: add a vm.overcommit_memory setting at the end of the sysctl.conf
+  shell: sysctl vm.overcommit_memory=1
