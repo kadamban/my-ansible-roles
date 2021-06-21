@@ -1,0 +1,38 @@
+---
+
+samba_packages:
+  - samba
+
+samba_configuration_dir: /etc/samba
+samba_configuration: "{{ samba_configuration_dir }}/smb.conf"
+samba_username_map_file: "{{ samba_configuration_dir }}/smbusers"
+
+samba_services:
+  - smb
+
+samba_www_documentroot: /var/www/html
+
+user: samba
+password: samba
+group: samba
+samba_shares_root: /opt/data/share
+samba_password: P@55w0rd
+
+samba_users:
+  
+    - name: test01
+      smbpasswd: P@55w0rd
+    - name: test02
+      smbpasswd: P@55w0rd
+  
+  #   # Define user name to create
+  # - name: vagrant
+  #   # Define groups to add user to
+  #   # ensure samba_groups names exist.
+  #   groups:
+  #     - nogroup
+  #     - securedgroup
+  #     - testgroup
+  #   # Define samba user password
+  #   smbpasswd: P@55w0rd
+samba_workgroup: "{{ samba_netbios_domain_name[0]|upper }}"

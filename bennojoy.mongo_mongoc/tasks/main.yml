@@ -27,6 +27,10 @@
   with_items: "{{ mongod_pkgs }}"
   when: ansible_os_family == "Debian"
 
+- name: "Update Hostnames"
+  hostname:
+    name: "{{ new_hostname }}"
+
 - name: install pymongo
   pip: name=pymongo state=present
 
@@ -111,29 +115,18 @@
   service: name=mongod state=started
   when: ansible_os_family == "Debian"
 
-- name: pause
-  pause: seconds=10
 
-- name: add the admin user
-  mongodb_user: database=admin name=admin password={{ mongoc_admin_pass }} state=present #login_port={{ mongoc_port }} 
-  when: ansible_os_family == "RedHat"
-  ignore_errors: yes
 
-- name: add the admin user itemplate Ubuntu
-  template: src=add_user.j2 dest={{ mongoc_datadir_prefix }}add_user.js owner={{ mongo_user }} group={{ mongo_group }}
-  when: ansible_os_family == "Debian"
-  register: useradd
-
-- name: add the admin user
-  shell: /usr/bin/mongo localhost:27017/admin {{ mongoc_datadir_prefix }}/add_user.js #localhost:{{ mongoc_port }}/admin
-  run_once: true
-  ignore_errors: yes 
+  #- name: add the admin user
+  #  shell: /usr/bin/mongo localhost:27017/admin {{ mongoc_datadir_prefix }}/add_user.js #localhost:{{ mongoc_port }}/admin
+  #  run_once: true
+  #  ignore_errors: yes 
   #when: useradd|changed
 
-- name: add the replicaset
-  shell: /usr/bin/mongo localhost:27017/admin -u admin -p {{ mongoc_admin_pass }} {{ mongoc_datadir_prefix }}/init_replicaset.js #localhost:{{ mongoc_port }}/admin
-  run_once: true
-  ignore_errors: yes 
+  #- name: add the replicaset
+  #  shell: /usr/bin/mongo localhost:27017/admin -u admin -p {{ mongoc_admin_pass }} {{ mongoc_datadir_prefix }}/init_replicaset.js #localhost:{{ mongoc_port }}/admin
+  #  run_once: true
+  #  ignore_errors: yes 
 
 # - name: Ensure replicaset configs exists
 #   mongodb_replicaset:

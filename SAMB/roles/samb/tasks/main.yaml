@@ -1,0 +1,67 @@
+---
+
+- name: Install Samba packages
+  package:
+    name: "{{ samba_packages }}"
+    state: present
+  tags: samba
+
+- name: Ensure group "somegroup" exists
+  group:
+    name: "{{ group }}"
+    state: present
+
+- name: Create Users Task
+  user:
+    name: "{{ user }}"
+    state: present
+    password: "{{ 'password' | password_hash('sha512','A512') }}"
+    shell: /bin/bash
+    group: "{{ group }}"
+
+
+- name: Create Samba shares root directory
+  file:
+    state: directory
+    path: "{{ samba_shares_root }}"
+    owner: "{{ user }}"
+    group: "{{ group }}"
+    mode: '0777'
+
+
+- name: Samba configuration
+  template:
+    dest: "{{ samba_configuration }}"
+    src: smb.conf.j2
+
+#- name: activate the Samba user
+#  shell: smbpasswd -a {{ admin }} -w {{ paswword }}
+
+#- name: set Samba passwords for each user
+#  shell: "printf '{{ item.passwd }}\n{{ item.passwd }}\n' | smbpasswd -a {{ item.name }}"
+#  with_items:
+#  - " {{ user }}"
+#  tags: smbpasswd
+
+- name: samba_users | creating samba user passwords # noqa 301 306
+  shell: "(echo {{ samba_password }}; echo {{ samba_password }}) | smbpasswd -s -a samba"
+  become: true
+#  with_items: "{{ samba_users }}"
+
+
+- name: restart smbd
+  service:
+    name: smb
+    state: restarted
+  become: true
+
+
+- name: Start Samba service(s)
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  with_items: "{{ samba_services }}"
+  tags: samba
+
+

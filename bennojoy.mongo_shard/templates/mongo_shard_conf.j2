@@ -8,17 +8,17 @@ systemLog:
 #fork = false
 
 storage:
-  dbPath: {{ mongo_datadir_prefix }}/configdb
+  dbPath: {{ mongo_datadir_prefix }}
   journal:
     enabled: true
 
 sharding:
-  clusterRole: configsvr
+    clusterRole: shardsvr
 replication:
-  replSetName: {{ mongoc_replicaset }}
+  replSetName: {{ mongo_shard_replicaset }}
 
 net:
-  port: {{ mongoc_port }}
-  bindIp: {{ mongoc_private_ip }},127.0.0.1
+  port: {{ mongo_port }}
+  bindIp: {{ mongo_private_ip }},127.0.0.1
   maxIncomingConnections: 999999
 

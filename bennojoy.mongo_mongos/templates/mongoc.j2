@@ -15,7 +15,7 @@ export LC_ALL="C"
 
 # NOTE: if you change any OPTIONS here, you get what you pay for:
 # this script assumes all options are in the config file.
-CONFIGFILE="/etc/mongos.conf"
+CONFIGFILE="/etc/mongoc.conf"
 OPTIONS=" -f $CONFIGFILE"
 SYSCONFIG="/etc/sysconfig/mongod"
 
@@ -24,7 +24,7 @@ SYSCONFIG="/etc/sysconfig/mongod"
 # for now.  This can go away when this script stops supporting 1.8.
 DBPATH=`awk -F= '/^dbpath=/{print $2}' "$CONFIGFILE"`
 PIDFILE=`awk -F= '/^dbpath\s=\s/{print $2}' "$CONFIGFILE"`
-mongod=${MONGOD-/usr/bin/mongos}
+mongod=${MONGOD-/usr/bin/mongod}
 
 MONGO_USER=mongod
 MONGO_GROUP=mongod
@@ -49,16 +49,16 @@ start()
   daemon --user "$MONGO_USER" $NUMACTL $mongod $OPTIONS
   RETVAL=$?
   echo
-  [ $RETVAL -eq 0 ] && touch /var/lock/subsys/mongos
+  [ $RETVAL -eq 0 ] && touch /var/lock/subsys/mongoc
 }
 
 stop()
 {
   echo -n $"Stopping mongod: "
-  killproc -p "$PIDFILE" -d 300 /usr/bin/mongos
+  killproc -p "$PIDFILE" -d 300 /usr/bin/mongod
   RETVAL=$?
   echo
-  [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/mongos
+  [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/mongoc
 }
 
 restart () {
@@ -92,4 +92,3 @@ case "$1" in
 esac
 
 exit $RETVAL
-

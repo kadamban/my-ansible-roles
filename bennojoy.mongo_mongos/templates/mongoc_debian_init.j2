@@ -15,12 +15,12 @@ stop on runlevel [06]
 script
   ENABLE_MONGODB="yes"
   if [ -f /etc/default/mongodb ]; then . /etc/default/mongodb; fi
-  if [ "x$ENABLE_MONGODB" = "xyes" ]; then exec start-stop-daemon --pidfile {{ mongos_keyfile_dir_prefix }}/mongos.pid --start --quiet --chuid mongodb --exec  /usr/bin/mongos -- --config /etc/mongos.conf; fi
+  if [ "x$ENABLE_MONGODB" = "xyes" ]; then exec start-stop-daemon --pidfile {{ mongoc_datadir_prefix }}/mongoc.pid --start --quiet --chuid mongodb --exec  /usr/bin/mongod -- --config /etc/mongoc.conf; fi
 end script
 post-stop script
     if [ -f "$CONFIG" ]
     then
-        pidfile="{{ mongos_keyfile_dir_prefix }}/mongos.pid"
+        pidfile="{{ mongoc_datadir_prefix }}/mongoc.pid"
         rm -f "$pidfile"
     fi
 end script
